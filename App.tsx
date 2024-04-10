@@ -1,15 +1,15 @@
-import Checkbox from "expo-checkbox";
+// import Checkbox from "expo-checkbox";
 import { ReactElement, ReactNode, useState } from "react";
 import {
-  Button,
   Keyboard,
   StyleSheet,
-  Text,
-  TextInput,
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import { Input } from "./components/Input/Input";
+// import { Input } from "./components/Input/Input";
+import { Main } from "./src/app/App";
+import { store } from "./src/app/store";
+import { Provider } from "react-redux";
 
 type Task = {
   id: number;
@@ -48,59 +48,11 @@ export default function App() {
   };
 
   return (
-    <View style={styles.container}>
-      <HideKeyBoard>
-        <View
-          style={[
-            {
-              width: "80%",
-              alignItems: "center",
-              paddingVertical: 20,
-            },
-          ]}
-        >
-          <TextInput
-            style={[styles.input]}
-            value={value}
-            onChangeText={setValue}
-          />
-        </View>
-      </HideKeyBoard>
-      <View style={[{ backgroundColor: "#078080", marginBottom: 15 }]}>
-        <Button
-          title="Add task"
-          onPress={addTask}
-          color={"#232323"}
-          disabled={value === ""}
-        />
+    <Provider store={store}>
+      <View style={styles.container}>
+        <Main />
       </View>
-      <View style={[styles.taskWrapper]}>
-        {tasks.map((t) => {
-          return (
-            <View key={t.id} style={[styles.task, globalStyles.border]}>
-              <View style={[{ backgroundColor: "#078080" }]}>
-                <Button
-                  title="X"
-                  onPress={() => deleteTask(t.id)}
-                  color={"#232323"}
-                />
-              </View>
-              {show === t.id ? (
-                <Input id={t.id} title={t.title} changeTitle={changeTitle} />
-              ) : (
-                <>
-                  <Text onPress={() => setShow(t.id)}>{t.title}</Text>
-                  <Checkbox
-                    value={t.isDone}
-                    onValueChange={() => changeCheckBox(t.id)}
-                  />
-                </>
-              )}
-            </View>
-          );
-        })}
-      </View>
-    </View>
+    </Provider>
   );
 }
 
@@ -114,8 +66,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f8f5f2",
-    alignItems: "center",
-    justifyContent: "center",
+    // alignItems: "center",
+    // justifyContent: "center",
   },
   input: {
     width: "80%",
@@ -136,10 +88,38 @@ const styles = StyleSheet.create({
   },
 });
 
-export const globalStyles = StyleSheet.create({
-  border: {
-    borderWidth: 1,
-    borderStyle: "solid",
-    borderColor: "#232323",
-  },
-});
+// export const globalStyles = StyleSheet.create({
+//   border: {
+//     borderWidth: 1,
+//     borderStyle: "solid",
+//     borderColor: "#232323",
+//   },
+// });
+
+// import {tasksReducer} from '../features/TodolistsList/tasks-reducer';
+// import {todolistsReducer} from '../features/TodolistsList/todolists-reducer';
+// import {applyMiddleware, combineReducers, createStore} from 'redux'
+// import thunkMiddleware, {ThunkAction, ThunkDispatch} from 'redux-thunk'
+// import {appReducer} from './app-reducer'
+// import {authReducer} from '../features/Login/auth-reducer'
+// import {configureStore, UnknownAction} from "@reduxjs/toolkit";
+
+// const rootReducer = combineReducers({
+// 	tasks: tasksReducer,
+// 	todolists: todolistsReducer,
+// 	app: appReducer,
+// 	auth: authReducer
+// })
+
+// // ❗старая запись, с новыми версиями не работает
+// //  const store = createStore(rootReducer, applyMiddleware(thunkMiddleware));
+// export const store = configureStore({reducer: rootReducer},)
+
+// export type AppRootStateType = ReturnType<typeof rootReducer>
+
+// // ❗ UnknownAction вместо AnyAction
+// export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, AppRootStateType, unknown, UnknownAction>
+
+// // export type AppDispatch = typeof store.dispatch
+// // ❗ UnknownAction вместо AnyAction
+// export type AppDispatch = ThunkDispatch<AppRootStateType, unknown, UnknownAction>
