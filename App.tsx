@@ -6,13 +6,24 @@ import {
   TouchableWithoutFeedback,
   View,
   Text,
+  Button,
 } from "react-native";
 // import { Input } from "./components/Input/Input";
 import { Main } from "./src/app/App";
 import { store } from "./src/app/store";
 import { Provider } from "react-redux";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import {
+  NativeStackScreenProps,
+  createNativeStackNavigator,
+} from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
+import {
+  SafeAreaProvider,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
+import { RootStackParamList } from "./src/types/navigation";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createDrawerNavigator } from "@react-navigation/drawer";
 
 type Task = {
   id: number;
@@ -20,23 +31,76 @@ type Task = {
   isDone: boolean;
 };
 
-function HomeScreen() {
+type PropsHome = NativeStackScreenProps<RootStackParamList, "Home", "MyStack">;
+type PropsProfile = NativeStackScreenProps<
+  RootStackParamList,
+  "Profile",
+  "MyStack"
+>;
+
+function HomeScreen({ navigation }: PropsHome) {
+  const insets = useSafeAreaInsets();
   return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+    <View
+      style={{
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
+        paddingLeft: insets.left,
+        paddingRight: insets.right,
+      }}
+    >
       <Text>Home Screen</Text>
+      <Button
+        title="Go to Profile"
+        onPress={() => navigation.navigate("Profile", { name: "Roman" })}
+      />
+    </View>
+  );
+}
+function ProfileScreen({ route, navigation }: PropsProfile) {
+  const { name } = route.params;
+  const insets = useSafeAreaInsets();
+  return (
+    <View
+      style={{
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
+        paddingLeft: insets.left,
+        paddingRight: insets.right,
+      }}
+    >
+      <Text>Profile Screen</Text>
+      <Text>My name: {JSON.stringify(name)}</Text>
+      <Button title="Go to Home" onPress={() => navigation.navigate("Home")} />
+      <Button title="Go back" onPress={() => navigation.goBack()} />
     </View>
   );
 }
 
-const Stack = createNativeStackNavigator();
+// const Stack = createNativeStackNavigator<RootStackParamList>();
+const Stack = createBottomTabNavigator<RootStackParamList>();
+// const Stack = createDrawerNavigator<RootStackParamList>();
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Home" component={HomeScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <SafeAreaProvider>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen
+            name="Profile"
+            component={ProfileScreen}
+            initialParams={{ name: "Batman" }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </SafeAreaProvider>
   );
 }
 
