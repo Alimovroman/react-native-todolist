@@ -5,11 +5,14 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
   View,
+  Text,
 } from "react-native";
 // import { Input } from "./components/Input/Input";
 import { Main } from "./src/app/App";
 import { store } from "./src/app/store";
 import { Provider } from "react-redux";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { NavigationContainer } from "@react-navigation/native";
 
 type Task = {
   id: number;
@@ -17,44 +20,64 @@ type Task = {
   isDone: boolean;
 };
 
-export default function App() {
-  const [value, setValue] = useState("");
-  const [show, setShow] = useState(0);
-  const [tasks, setTasks] = useState<Task[]>([
-    { id: 1, title: "HTML", isDone: true },
-    { id: 2, title: "CSS", isDone: true },
-    { id: 3, title: "JS", isDone: false },
-    { id: 4, title: "React", isDone: true },
-    { id: 5, title: "React-native", isDone: false },
-  ]);
-
-  const addTask = () => {
-    const task: Task = { id: tasks.length + 1, title: value, isDone: false };
-    setTasks([...tasks, task]);
-    setValue("");
-  };
-  const deleteTask = (id: number) => {
-    setTasks(tasks.filter((t) => t.id !== id));
-  };
-  const changeCheckBox = (id: number) => {
-    setTasks(tasks.map((t) => (t.id === id ? { ...t, isDone: !t.isDone } : t)));
-  };
-  const changeShow = (id: number) => {
-    setShow(id);
-  };
-  const changeTitle = (id: number, title: string) => {
-    setTasks(tasks.map((t) => (t.id === id ? { ...t, title } : t)));
-    setShow(0);
-  };
-
+function HomeScreen() {
   return (
-    <Provider store={store}>
-      <View style={styles.container}>
-        <Main />
-      </View>
-    </Provider>
+    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+      <Text>Home Screen</Text>
+    </View>
   );
 }
+
+const Stack = createNativeStackNavigator();
+
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="Home" component={HomeScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
+
+// export default function App() {
+//   const [value, setValue] = useState("");
+//   const [show, setShow] = useState(0);
+//   const [tasks, setTasks] = useState<Task[]>([
+//     { id: 1, title: "HTML", isDone: true },
+//     { id: 2, title: "CSS", isDone: true },
+//     { id: 3, title: "JS", isDone: false },
+//     { id: 4, title: "React", isDone: true },
+//     { id: 5, title: "React-native", isDone: false },
+//   ]);
+
+//   const addTask = () => {
+//     const task: Task = { id: tasks.length + 1, title: value, isDone: false };
+//     setTasks([...tasks, task]);
+//     setValue("");
+//   };
+//   const deleteTask = (id: number) => {
+//     setTasks(tasks.filter((t) => t.id !== id));
+//   };
+//   const changeCheckBox = (id: number) => {
+//     setTasks(tasks.map((t) => (t.id === id ? { ...t, isDone: !t.isDone } : t)));
+//   };
+//   const changeShow = (id: number) => {
+//     setShow(id);
+//   };
+//   const changeTitle = (id: number, title: string) => {
+//     setTasks(tasks.map((t) => (t.id === id ? { ...t, title } : t)));
+//     setShow(0);
+//   };
+
+//   return (
+//     <Provider store={store}>
+//       <View style={styles.container}>
+//         <Main />
+//       </View>
+//     </Provider>
+//   );
+// }
 
 const HideKeyBoard = ({ children }: { children: ReactNode }): ReactElement => (
   <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
