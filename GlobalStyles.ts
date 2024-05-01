@@ -6,4 +6,9 @@ export const globalStyles = StyleSheet.create({
     borderColor: "red",
     borderWidth: 1,
   },
+  center: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
 });

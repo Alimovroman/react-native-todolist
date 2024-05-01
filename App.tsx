@@ -24,6 +24,7 @@ import {
 import { RootStackParamList } from "./src/types/navigation";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createDrawerNavigator } from "@react-navigation/drawer";
+import { RootAuth } from "./src/Screens/AuthScreens/RootAuth";
 
 type Task = {
   id: number;
@@ -84,7 +85,7 @@ function ProfileScreen({ route, navigation }: PropsProfile) {
 }
 
 // const Stack = createNativeStackNavigator<RootStackParamList>();
-const Stack = createBottomTabNavigator<RootStackParamList>();
+export const Stack = createBottomTabNavigator<RootStackParamList>();
 // const Stack = createDrawerNavigator<RootStackParamList>();
 
 export default function App() {
@@ -97,6 +98,11 @@ export default function App() {
             name="Profile"
             component={ProfileScreen}
             initialParams={{ name: "Batman" }}
+          />
+          <Stack.Screen
+            name="Auth"
+            component={RootAuth}
+            options={{ headerShown: false }}
           />
         </Stack.Navigator>
       </NavigationContainer>
