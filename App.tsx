@@ -6,7 +6,10 @@ import {
   TouchableWithoutFeedback,
   View,
   Text,
+  FlatList,
   Button,
+  SafeAreaView,
+  TouchableOpacity,
 } from "react-native";
 // import { Input } from "./components/Input/Input";
 import { Main } from "./src/app/App";
@@ -25,6 +28,8 @@ import { RootStackParamList } from "./src/types/navigation";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { RootAuth } from "./src/Screens/AuthScreens/RootAuth";
+import User from "./src/Screens/User/User";
+import { FakeDataUserType, fakeDataUser } from "./src/app/FakeDataUser";
 
 type Task = {
   id: number;
@@ -61,9 +66,36 @@ function HomeScreen({ navigation }: PropsHome) {
     </View>
   );
 }
+
+type ItemProps = {
+  user: FakeDataUserType;
+  onPress: () => void;
+};
+
+const Item = ({ user, onPress }: ItemProps) => (
+  <View>
+    <TouchableOpacity onPress={onPress}>
+      {user.avatar && (
+        <Text>
+          <img src={user.avatar} alt="ava" />
+        </Text>
+      )}
+      <Text>
+        {user.firstName} {user.lastName}
+      </Text>
+    </TouchableOpacity>
+  </View>
+);
+
 function ProfileScreen({ route, navigation }: PropsProfile) {
   const { name } = route.params;
+  const [dataUser, setDataUser] = useState<FakeDataUserType[]>(fakeDataUser);
   const insets = useSafeAreaInsets();
+
+  const onNavigateUser = (user: FakeDataUserType) => {
+    navigation.navigate("User", { user });
+  };
+
   return (
     <View
       style={{
@@ -77,6 +109,16 @@ function ProfileScreen({ route, navigation }: PropsProfile) {
       }}
     >
       <Text>Profile Screen</Text>
+      {dataUser && (
+        <FlatList
+          data={dataUser}
+          renderItem={({ item }) => (
+            <Item user={item} onPress={() => onNavigateUser(item)} />
+          )}
+          keyExtractor={(item) => "" + item.id}
+        />
+      )}
+
       <Text>My name: {JSON.stringify(name)}</Text>
       <Button title="Go to Home" onPress={() => navigation.navigate("Home")} />
       <Button title="Go back" onPress={() => navigation.goBack()} />
@@ -99,11 +141,12 @@ export default function App() {
             component={ProfileScreen}
             initialParams={{ name: "Batman" }}
           />
-          <Stack.Screen
+          <Stack.Screen name="User" component={User} />
+          {/* <Stack.Screen
             name="Auth"
             component={RootAuth}
             options={{ headerShown: false }}
-          />
+          /> */}
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>
